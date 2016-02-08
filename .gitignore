@@ -7,8 +7,3 @@
 !Asssets/Resources/*
 !Asssets/Resources/Scripts/*
 !Asssets/Resources/Textures/*
-
-# etc...
-
-# ...even if they are in subdirectories
-!*/
