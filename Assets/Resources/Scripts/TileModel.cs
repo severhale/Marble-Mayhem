@@ -4,7 +4,6 @@ using System.Collections;
 public class TileModel : MonoBehaviour {
 	protected Tile parent;
 	protected int type;
-	protected Material mat;
 
 	public virtual void init(Tile parent, int type) {
 		this.parent = parent;
@@ -19,26 +18,23 @@ public class TileModel : MonoBehaviour {
 
 		transform.parent = parent.transform;
 		transform.localPosition = new Vector3(0, 0, BoardManager.TileZ);
-		mat = GetComponent<Renderer>().material;
 		switch (type) {
 			case Tile.TILE_BLANK:
-				mat.mainTexture = Resources.Load<Texture2D>("Textures/tileBlank");
+				GetComponent<Renderer>().material = (Material)Resources.Load("Textures/tileBlankMaterial", typeof(Material));
 				break;
 			case Tile.TILE_PIT:
-				mat.mainTexture = Resources.Load<Texture2D>("Textures/tilePit");
+				GetComponent<Renderer>().material = (Material)Resources.Load("Textures/tileBlankMaterial", typeof(Material));
 				break;
 			case Tile.TILE_WALL:
-				mat.mainTexture = Resources.Load<Texture2D>("Textures/tileWall");
+				GetComponent<Renderer>().material = (Material)Resources.Load("Textures/turnLightsMaterial", typeof(Material));
 				break;
 			case Tile.TURN_LIGHTS:
-				mat.mainTexture = Resources.Load<Texture2D>("Textures/turnLights");
+				GetComponent<Renderer>().material = (Material)Resources.Load("Textures/turnLightsMaterial", typeof(Material));
 				break;
 			default:
-				mat.mainTexture = Resources.Load<Texture2D>("Textures/tileBlank");
+				GetComponent<Renderer>().material = (Material)Resources.Load("Textures/tileBlankMaterial", typeof(Material));
 				break;
 		}
-		mat.color = new Color(1, 1, 1);
-		mat.shader = Shader.Find("Transparent/Diffuse");
 	}
 }
 

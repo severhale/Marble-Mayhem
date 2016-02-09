@@ -19,7 +19,7 @@ public class GemModel : MonoBehaviour
 		mat = GetComponent<Renderer>().material;								// Get the material component of this quad object.
 		mat.mainTexture = Resources.Load<Texture2D>("Textures/gem"+gemType);	// Set the texture.  Must be in Resources folder.
 		mat.color = new Color(1,1,1);											// Set the color (easy way to tint things).
-		mat.shader = Shader.Find ("Transparent/Diffuse");						// Tell the renderer that our textures have transparency. 
+		mat.shader = Shader.Find ("Sprites/Default");						// Tell the renderer that our textures have transparency. 
 	}
 		
 	void Start () {

@@ -105,10 +105,10 @@ public class BoardManager : MonoBehaviour {
 	void addTrain() {
 		GameObject train = GameObject.CreatePrimitive(PrimitiveType.Quad);
 		train.transform.parent = trainFolder.transform;
-		Material mat = train.GetComponent<Renderer>().material;
-		mat.mainTexture = Resources.Load<Texture2D>("Textures/marble");
-		mat.color = new Color(1, 1, 1);
-		mat.shader = Shader.Find("Transparent/Diffuse");
+		train.GetComponent<Renderer>().material = (Material)Resources.Load("Textures/TrainMaterial", typeof(Material));
+//		mat.mainTexture = Resources.Load<Texture2D>("Textures/marble");
+//		mat.color = new Color(1, 1, 1);
+//		mat.shader = Shader.Find("Sprites/Default");
 		train.name = "Marble";
 		train.tag = "Player";
 		TrainMovement movement = train.AddComponent<TrainMovement>();

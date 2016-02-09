@@ -34,10 +34,10 @@ public class TurnLightsModel : TileModel {
 	public void setActive(bool flag) {
 		active = flag;
 		if (active) {
-			mat.color = new Color(1.5f, 1.5f, 1.5f, 1);
+			GetComponent<Renderer>().material.color = new Color(1.5f, 1.5f, 1.5f, 1);
 		}
 		else {
-			mat.color = new Color(0.2f, 0.2f, 0.2f, 0.4f);
+			GetComponent<Renderer>().material.color = new Color(0.2f, 0.2f, 0.2f, 0.4f);
 		}
 	}
 
