@@ -4,11 +4,13 @@ using System.Collections.Generic;
 
 public class BoardManager : MonoBehaviour {
 	GameObject tileFolder;
-	GameObject trainFolder;
+	GameObject marbleFolder;
 	Tile[,] board;
-	List<TrainMovement> trains;
+	List<Marble> marbles;
 	bool isRunning = false;
-//    GemManager gemMan;
+    GemManager gemMan;
+	float timeSinceLastGem;
+	int score;
 
     public const int boardWidth = 7;
 	public const int boardHeight = 7;
@@ -25,15 +27,17 @@ public class BoardManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start() {
-		trains = new List<TrainMovement>();
+		score = 0;
+		timeSinceLastGem = 0.0f;
+		marbles = new List<Marble>();
 		tileFolder = new GameObject();
 		tileFolder.name = "Tiles";
-		trainFolder = new GameObject();
-		trainFolder.name = "Marbles";
+		marbleFolder = new GameObject();
+		marbleFolder.name = "Marbles";
 		board = new Tile [boardWidth, boardHeight];
 		List<int> openColumns = new List<int>();
 		for (int i = 0; i < 3; i++) {
-			addTrain();
+			addMarble();
 		}
 		for (int i = 0; i < boardWidth; i++) {
 			openColumns.Add(i);
@@ -53,10 +57,10 @@ public class BoardManager : MonoBehaviour {
 			board[row, col].addTurn(Random.Range(0, 4));
 			openColumns.RemoveAt(colIndex);
 		}
-//        GameObject gemManagerObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
-//        gemMan = gemManagerObject.AddComponent<GemManager>();
-//        gemMan.init(this, board);
-		foreach (TrainMovement t in trains) {
+        GameObject gemManagerObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        gemMan = gemManagerObject.AddComponent<GemManager>();
+        gemMan.init(this, board);
+		foreach (Marble t in marbles) {
 			print("Initializaing a train.\n");
             t.init(this);
         }
@@ -72,10 +76,16 @@ public class BoardManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update() {
-		if (isRunning) {
-			foreach (TrainMovement tm in trains) {
-				tm.updatePosition();
-			}
+		if (!isRunning) {
+			return;
+		}
+		timeSinceLastGem += Time.deltaTime;
+		if (gemMan.shouldSpawnGem(timeSinceLastGem)) {
+			gemMan.addGem();
+			timeSinceLastGem = 0.0f;
+		}
+		foreach (Marble tm in marbles) {
+			tm.updatePosition();
 		}
 		int mb = -1;
 		if (Input.GetMouseButtonDown(0)) {
@@ -89,7 +99,7 @@ public class BoardManager : MonoBehaviour {
 			int x = Mathf.RoundToInt(worldCoords.x) + boardWidth / 2;
 			int y = Mathf.RoundToInt(worldCoords.y) + boardHeight / 2;
 			bool isTrainOnTile = false;
-			foreach (TrainMovement tm in trains) {
+			foreach (Marble tm in marbles) {
 				if (tm.currX == x && tm.currY == y) {
 					isTrainOnTile = true;
 					break;
@@ -100,19 +110,6 @@ public class BoardManager : MonoBehaviour {
 				t.rotateTurn(1 - mb); // left click = clockwise, right click = counterclockwise
 			}
 		}
-	}
-
-	void addTrain() {
-		GameObject train = GameObject.CreatePrimitive(PrimitiveType.Quad);
-		train.transform.parent = trainFolder.transform;
-		train.GetComponent<Renderer>().material = (Material)Resources.Load("Textures/TrainMaterial", typeof(Material));
-//		mat.mainTexture = Resources.Load<Texture2D>("Textures/marble");
-//		mat.color = new Color(1, 1, 1);
-//		mat.shader = Shader.Find("Sprites/Default");
-		train.name = "Marble";
-		train.tag = "Player";
-		TrainMovement movement = train.AddComponent<TrainMovement>();
-		trains.Add(movement);
 	}
 
 	void OnGUI() {
@@ -154,11 +151,29 @@ public class BoardManager : MonoBehaviour {
 		return t;
 	}
 
+	void addMarble() {
+		GameObject marbleObj = new GameObject();
+		marbleObj.transform.parent = marbleFolder.transform;
+		marbleObj.name = "Marble Container";
+		Marble marble = marbleObj.AddComponent<Marble>();
+		marbles.Add(marble);
+	}
+
+	public void destroyMarble(Marble m) {
+		Destroy(m.gameObject);
+		marbles.Remove(m);
+	}
+
 	public Tile getTile(int x, int y) {
 		return board[x, y];
 	}
 
 	public Vector3 getTileCoordinates(int x, int y) {
 		return board[x, y].transform.position;
+	}
+
+	public void onGemPickup() {
+		score++;
+		print("Score is now: " + score);
 	}
 }

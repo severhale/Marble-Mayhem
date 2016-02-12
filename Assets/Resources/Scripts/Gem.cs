@@ -22,18 +22,26 @@ public class Gem : MonoBehaviour {
 
 	private GemModel model;		// The model object.
 	private int gemType;		// Will determine the color and animation for the model.
-	private GemManager m;		// A pointer to the manager (not needed here, but potentially useful in general).
+	private GemManager manager;		// A pointer to the manager (not needed here, but potentially useful in general).
 
 	// The Start function is good for initializing objects, but doesn't allow you to pass in parameters.
 	// For any initialization that requires input, you'll probably want your own init function. 
 
 	public void init(int gemType, GemManager m) {
 		this.gemType = gemType;
-		this.m = m;
+		this.manager = m;
 
 		var modelObject = GameObject.CreatePrimitive(PrimitiveType.Quad);	// Create a quad object for holding the gem texture.
 		model = modelObject.AddComponent<GemModel>();						// Add a gemModel script to control visuals of the gem.
-		model.init(gemType, this);						
+		model.init(gemType, this);
+		BoxCollider2D coll = gameObject.AddComponent<BoxCollider2D>();
+		coll.isTrigger = true;
+	}
+
+	public void OnTriggerEnter2D(Collider2D coll) {
+		if (coll.gameObject.tag == "Player") {
+			manager.pickupGem(this);
+		}
 	}
 }
 

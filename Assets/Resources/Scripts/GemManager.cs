@@ -12,7 +12,7 @@ public class GemManager : MonoBehaviour {
     List<Tile>  emptyTiles;
 	int gemType; 			// The next gem type to be created.
     private const float gemSpawnInterval = 1.5f;
-    float clock = 0;
+    float lastSpawnTime = 0;
     BoardManager bm;
 	
     public void init(BoardManager boardMan, Tile[,] board) {
@@ -30,25 +30,21 @@ public class GemManager : MonoBehaviour {
     }
 
 	// Update is called every frame.
-	void Update () {
-        clock += Time.deltaTime;
-		if (clock >= gemSpawnInterval * gems.Count) {
-            print("Adding gem.");
-            clock = 0;
-            int index = Random.Range(0, emptyTiles.Count);
-            Tile targetTile = emptyTiles[index];
-            Vector3 coordinates = targetTile.transform.position;
-            addGem(coordinates.x, coordinates.y);
-            emptyTiles.RemoveAt(index);
-		}
+	public bool shouldSpawnGem(float timeSinceLastGem) {
+		return (timeSinceLastGem >= gemSpawnInterval * gems.Count);
 	}
 
-	void addGem(float x, float y) {
+	public void addGem() {
+		print("Adding gem.");
+		int index = Random.Range(0, emptyTiles.Count);
+		Tile targetTile = emptyTiles[index];
+		Vector3 coordinates = targetTile.transform.position;
+		emptyTiles.RemoveAt(index);
 		GameObject gemObject = new GameObject();			// Create a new empty game object that will hold a gem.
 		Gem gem = gemObject.AddComponent<Gem>();			// Add the Gem.cs script to the object.
 															// We can now refer to the object via this script.
 		gem.transform.parent = gemFolder.transform;			// Set the gem's parent object to be the gem folder.
-		gem.transform.position = new Vector3(x,y,BoardManager.GemZ);		// Position the gem at x,y.								
+		gem.transform.position = new Vector3(coordinates.x, coordinates.y, BoardManager.GemZ);		// Position the gem at x,y.								
 		
 		gem.init(gemType, this);							// Initialize the gem script.
 		
@@ -56,5 +52,11 @@ public class GemManager : MonoBehaviour {
 		gem.name = "Gem "+gems.Count;						// Give the gem object a name in the Hierarchy pane.
 		
 		gemType = (gemType%4) + 1;							
+	}
+
+	public void pickupGem(Gem gem) {
+		gems.Remove(gem);
+		bm.onGemPickup();
+		Destroy(gem.gameObject);
 	}
 }
