@@ -30,6 +30,7 @@ public class Gem : MonoBehaviour {
 	public void init(int gemType, GemManager m) {
 		this.gemType = gemType;
 		this.manager = m;
+		name = "Gem";
 
 		var modelObject = GameObject.CreatePrimitive(PrimitiveType.Quad);	// Create a quad object for holding the gem texture.
 		model = modelObject.AddComponent<GemModel>();						// Add a gemModel script to control visuals of the gem.
