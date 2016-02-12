@@ -4,6 +4,8 @@
 # But not these files...
 !.gitignore
 !Assets/*
-!Asssets/Resources/*
-!Asssets/Resources/Scripts/*
-!Asssets/Resources/Textures/*
+!Assets/Resources/*
+!Assets/Resources/Scripts/*
+!Assets/Resources/Textures/*
+
+!*/

@@ -7,7 +7,7 @@ public class BoardManager : MonoBehaviour {
 	GameObject marbleFolder;
 	Tile[,] board;
 	List<Marble> marbles;
-	bool isRunning = false;
+	public bool isRunning = false;
     GemManager gemMan;
 	float timeSinceLastGem;
 	int score;
@@ -123,6 +123,7 @@ public class BoardManager : MonoBehaviour {
 				startMovement();
 			}
 		}
+		GUI.Label(new Rect(Screen.width - 100, 0, Screen.width, 50), "Score: " + score);
 	}
 
 	public static string getDirectionName(int dir) {
