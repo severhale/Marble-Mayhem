@@ -61,7 +61,6 @@ public class BoardManager : MonoBehaviour {
         gemMan = gemManagerObject.AddComponent<GemManager>();
         gemMan.init(this, board);
 		foreach (Marble t in marbles) {
-			print("Initializaing a train.\n");
             t.init(this);
         }
 	}
@@ -84,6 +83,7 @@ public class BoardManager : MonoBehaviour {
 			gemMan.addGem();
 			timeSinceLastGem = 0.0f;
 		}
+		gemMan.updateOnFrame();
 		foreach (Marble tm in marbles) {
 			tm.updatePosition();
 		}
@@ -166,7 +166,17 @@ public class BoardManager : MonoBehaviour {
 	}
 
 	public Tile getTile(int x, int y) {
-		return board[x, y];
+		if (x < boardWidth && y < boardHeight) {
+			return board[x, y];
+		}
+		else {
+			print("Error: Tile index out of bounds. (" + x + ", " + y + ")");
+			return board[0, 0];
+		}
+	}
+
+	public Tile getTileFromCoordinates(float x, float y) {
+		return getTile(Mathf.RoundToInt(x) + boardWidth / 2, Mathf.RoundToInt(y) + boardHeight / 2);
 	}
 
 	public Vector3 getTileCoordinates(int x, int y) {

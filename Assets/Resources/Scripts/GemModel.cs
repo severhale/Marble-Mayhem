@@ -15,6 +15,7 @@ public class GemModel : MonoBehaviour
 		transform.parent = owner.transform;					// Set the model's parent to the gem.
 		transform.localPosition = new Vector3(0,0,0);		// Center the model on the parent.
 		name = "Gem Model";									// Name the object.
+		clock = 0.0f;
 
 		DestroyImmediate(GetComponent<MeshRenderer>());
 		DestroyImmediate(GetComponent<MeshCollider>());
@@ -26,17 +27,13 @@ public class GemModel : MonoBehaviour
 //		mat.color = new Color(1,1,1);											// Set the color (easy way to tint things).
 //		mat.shader = Shader.Find ("Sprites/Default");						// Tell the renderer that our textures have transparency. 
 	}
-		
-	void Start () {
-		clock = 0f;
-	}
 
-	void Update () {
+	public void updateOnFrame () {
 		
 		// Incrememnt the clock based on how much time has elapsed since the previous update.
 		// Using deltaTime is critical for animation and movement, since the time between each call
 		// to Update is unpredictable.
-		clock = clock + Time.deltaTime;
+		clock += Time.deltaTime;
 
 		// A more serious project would probably use subclasses for gem types, or at least enums instead of 
 		// this silly gemType int plus a bunch of if statements.  But it'll do for here.  
@@ -53,6 +50,10 @@ public class GemModel : MonoBehaviour
 		if (gemType == 4) { // set color for twinkle effect
 			sRender.color = new Color(1+0.5f*Mathf.Sin(8*clock),1+0.5f*Mathf.Sin(8*clock),1+0.5f*Mathf.Sin(8*clock));
 		}
+	}
+
+	public void setAlpha(float a) {
+		sRender.color = new Color(sRender.color.r, sRender.color.g, sRender.color.b, a);
 	}
 }
 

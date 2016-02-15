@@ -29,13 +29,21 @@ public class GemManager : MonoBehaviour {
         }
     }
 
+	public void updateOnFrame() {
+		for (int i = gems.Count - 1; i >= 0; i--) {
+			Gem g = gems[i];
+			if (g.updateAndCheckDestroy()) {
+				destroyGem(g);
+			}
+		}
+	}
+
 	// Update is called every frame.
 	public bool shouldSpawnGem(float timeSinceLastGem) {
 		return (timeSinceLastGem >= gemSpawnInterval * gems.Count);
 	}
 
 	public void addGem() {
-		print("Adding gem.");
 		int index = Random.Range(0, emptyTiles.Count);
 		Tile targetTile = emptyTiles[index];
 		Vector3 coordinates = targetTile.transform.position;
@@ -55,8 +63,13 @@ public class GemManager : MonoBehaviour {
 	}
 
 	public void pickupGem(Gem gem) {
-		gems.Remove(gem);
 		bm.onGemPickup();
+		destroyGem(gem);
+	}
+
+	public void destroyGem(Gem gem) {
+		gems.Remove(gem);
+		emptyTiles.Add(bm.getTileFromCoordinates(gem.transform.position.x, gem.transform.position.y));
 		Destroy(gem.gameObject);
 	}
 }

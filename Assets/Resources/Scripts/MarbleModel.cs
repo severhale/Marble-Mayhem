@@ -30,5 +30,9 @@ public class MarbleModel : MonoBehaviour {
 			marble.onCollisionWithMarble();
 		}
 	}
+
+	public void setColor(Color c) {
+		GetComponent<Renderer>().material.color = c;
+	}
 }
 

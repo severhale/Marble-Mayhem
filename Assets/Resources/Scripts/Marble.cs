@@ -20,6 +20,8 @@ public class Marble : MonoBehaviour {
 
 	private float boostTime = 1.0f;
 	private float boostCooldownTime = 5.0f;
+	private float maxRelativeSpeed = 10.0f;
+	private float deltaSpeedPerSecond = .01f;
 
 	private float tempTimeBuffer = 0.0f;
 
@@ -54,7 +56,17 @@ public class Marble : MonoBehaviour {
 			return;
 		}
 
+		float dTime = Time.deltaTime;
+
+		if (!boosted) {
+			if (relativeSpeed < maxRelativeSpeed) {
+				relativeSpeed += dTime * deltaSpeedPerSecond;
+			}
+		}
 		if (boosted) {
+			if (relativeSpeed / 2.0f < maxRelativeSpeed) {
+				relativeSpeed += dTime * deltaSpeedPerSecond * 2;
+			}
 			duringBoost();
 		}
 		else if (boostCooldown) {
@@ -76,7 +88,7 @@ public class Marble : MonoBehaviour {
 		}
 
 //		clock += Time.deltaTime;
-		percentComplete += Time.deltaTime * relativeSpeed;
+		percentComplete += dTime * relativeSpeed;
 		if (percentComplete >= 1) {
 			done = true;
 //			clock = 0f;
@@ -111,7 +123,7 @@ public class Marble : MonoBehaviour {
 				if (outputDir == (enteringFrom + 1) % 4) {
 					rotationDirection = -1;
 				}
-				transform.RotateAround(pivot, rotationDirection * Vector3.forward, Time.deltaTime * 90 * relativeSpeed);
+				transform.RotateAround(pivot, rotationDirection * Vector3.forward, dTime * 90 * relativeSpeed);
                 transform.position = new Vector3(transform.position.x, transform.position.y, BoardManager.TrainZ);
                 transform.rotation.Set(0, 0, transform.rotation.z, transform.rotation.w);
 			}
@@ -121,8 +133,6 @@ public class Marble : MonoBehaviour {
 			currY = (BoardManager.boardHeight + currY) % BoardManager.boardWidth;
 			transform.position = board.getTileCoordinates(currX, currY) - .5f * exitPointRel;
             transform.position = new Vector3(transform.position.x, transform.position.y, BoardManager.TrainZ);
-//			print("Done. New tile: " + currX + ", " + currY);
-//			print("Position: " + transform.position);
 		}
 	}
 
@@ -131,7 +141,8 @@ public class Marble : MonoBehaviour {
 			boosted = true;
 			boostCooldown = false;
 			timeSinceBoostStart = 0.0f;
-			relativeSpeed = 2.0f;
+			relativeSpeed *= 2.0f;
+			model.setColor(new Color(0, 1, 0));
 		}
 	}
 
@@ -139,9 +150,10 @@ public class Marble : MonoBehaviour {
 		timeSinceBoostStart += Time.deltaTime;
 		if (timeSinceBoostStart >= boostTime) {
 			boosted = false;
-			relativeSpeed = 1.0f;
+			relativeSpeed /= 2.0f;
 			timeSinceBoostEnd = 0.0f;
 			boostCooldown = true;
+			model.setColor(new Color(1, 0, 0));
 		}
 	}
 
@@ -149,11 +161,12 @@ public class Marble : MonoBehaviour {
 		timeSinceBoostEnd += Time.deltaTime;
 		if (timeSinceBoostEnd >= boostCooldownTime) {
 			boostCooldown = false;
+			timeSinceBoostEnd = 0.0f;
+			model.setColor(new Color(1, 1, 1));
 		}
 	}
 
 	public void onCollisionWithMarble() {
-		print("Shoot.");
 		health -= 50;
 		checkHealth();
 	}
