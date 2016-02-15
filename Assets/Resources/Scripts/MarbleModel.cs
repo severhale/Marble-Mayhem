@@ -21,7 +21,7 @@ public class MarbleModel : MonoBehaviour {
 		rigidBody.gravityScale = 0;
 	}
 
-	public void OnMouseUpAsButton() {
+	public void OnMouseDown() {
 		marble.handleMouseClick();
 	}
 
