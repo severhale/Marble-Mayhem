@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class BoardManager : MonoBehaviour {
 	GameObject tileFolder;
@@ -9,6 +10,7 @@ public class BoardManager : MonoBehaviour {
 	List<Marble> marbles;
 	public bool isRunning = false;
     GemManager gemMan;
+	ElephantManager elMan;
 	float timeSinceLastGem;
 	int score;
 
@@ -60,6 +62,9 @@ public class BoardManager : MonoBehaviour {
         GameObject gemManagerObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
         gemMan = gemManagerObject.AddComponent<GemManager>();
         gemMan.init(this, board);
+		GameObject elManObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
+		elMan = elManObject.AddComponent<ElephantManager>();
+		elMan.init(this);
 		foreach (Marble t in marbles) {
             t.init(this);
         }
@@ -78,12 +83,17 @@ public class BoardManager : MonoBehaviour {
 		if (!isRunning) {
 			return;
 		}
+		if (marbles.Count == 0) {
+			restartGame();
+		}
+
 		timeSinceLastGem += Time.deltaTime;
 		if (gemMan.shouldSpawnGem(timeSinceLastGem)) {
 			gemMan.addGem();
 			timeSinceLastGem = 0.0f;
 		}
 		gemMan.updateOnFrame();
+		elMan.updateOnFrame();
 		foreach (Marble tm in marbles) {
 			tm.updatePosition();
 		}
@@ -186,5 +196,12 @@ public class BoardManager : MonoBehaviour {
 	public void onGemPickup() {
 		score++;
 		print("Score is now: " + score);
+		if (score % 3 == 0) {
+			elMan.addElephant();
+		}
+	}
+
+	public void restartGame() {
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 }

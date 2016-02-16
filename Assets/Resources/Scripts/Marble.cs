@@ -20,8 +20,8 @@ public class Marble : MonoBehaviour {
 
 	private float boostTime = 1.0f;
 	private float boostCooldownTime = 5.0f;
-	private float maxRelativeSpeed = 10.0f;
-	private float deltaSpeedPerSecond = .01f;
+	private float maxRelativeSpeed = 2.0f;
+	private float deltaSpeedPerSecond = .002f;
 
 	private float tempTimeBuffer = 0.0f;
 
@@ -169,6 +169,10 @@ public class Marble : MonoBehaviour {
 	public void onCollisionWithMarble() {
 		health -= 50;
 		checkHealth();
+	}
+
+	public void onCollisionWithEnemy() {
+		board.destroyMarble(this);
 	}
 
 	public bool checkHealth() {

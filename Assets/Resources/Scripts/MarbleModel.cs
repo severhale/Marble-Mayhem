@@ -29,6 +29,9 @@ public class MarbleModel : MonoBehaviour {
 		if (other.gameObject.tag == "Player") {
 			marble.onCollisionWithMarble();
 		}
+		else if (other.gameObject.tag == "Enemy") {
+			marble.onCollisionWithEnemy();
+		}
 	}
 
 	public void setColor(Color c) {
