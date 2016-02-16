@@ -8,11 +8,13 @@ public class BoardManager : MonoBehaviour {
 	GameObject marbleFolder;
 	Tile[,] board;
 	List<Marble> marbles;
-	public bool isRunning = false;
     GemManager gemMan;
 	ElephantManager elMan;
 	float timeSinceLastGem;
 	int score;
+
+	public bool gameOver = false;
+	public bool isRunning = false;
 
     public const int boardWidth = 7;
 	public const int boardHeight = 7;
@@ -80,11 +82,12 @@ public class BoardManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update() {
-		if (!isRunning) {
+		if (!isRunning || gameOver) {
 			return;
 		}
 		if (marbles.Count == 0) {
-			restartGame();
+			gameOver = true;
+			return;
 		}
 
 		timeSinceLastGem += Time.deltaTime;
@@ -123,7 +126,17 @@ public class BoardManager : MonoBehaviour {
 	}
 
 	void OnGUI() {
-		if (isRunning) {
+		if (gameOver) {
+			if (GUI.Button(new Rect(10, 10, 70, 40), "Restart")) {
+				restartGame();
+			}
+			GUIStyle style = new GUIStyle();
+			style.fontSize = 24;
+			Vector3 corner1 = Camera.main.WorldToScreenPoint(new Vector3(-boardWidth / 2, -boardHeight / 2, 0));
+			Vector3 corner2 = Camera.main.WorldToScreenPoint(new Vector3(boardWidth / 2, boardHeight / 2, 0));
+			GUI.Label(new Rect(corner1.x, corner1.y, corner2.x, corner2.y), "Game Over! Score: " + score, style);
+		}
+		else if (isRunning) {
 			if (GUI.Button(new Rect(10, 10, 70, 40), "Pause")) {
 				stopMovement();
 			}
