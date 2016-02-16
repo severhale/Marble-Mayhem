@@ -38,6 +38,12 @@ public class GemManager : MonoBehaviour {
 		}
 	}
 
+	public void animateWithoutUpdating() {
+		foreach (Gem g in gems) {
+			g.animateWithoutUpdating();
+		}
+	}
+
 	// Update is called every frame.
 	public bool shouldSpawnGem(float timeSinceLastGem) {
 		return (timeSinceLastGem >= gemSpawnInterval * gems.Count);

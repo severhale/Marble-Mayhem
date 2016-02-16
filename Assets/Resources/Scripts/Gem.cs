@@ -48,12 +48,16 @@ public class Gem : MonoBehaviour {
 		if (age >= lifeSpan) {
 			return true;
 		}
-		model.updateOnFrame();
+		model.animate();
 		float lifePercentage = age / lifeSpan;
 		if (lifePercentage >= 0.75f) {
 			model.setAlpha((1 - lifePercentage) * 4);
 		}
 		return false;
+	}
+
+	public void animateWithoutUpdating() {
+		model.animate();
 	}
 
 	public void OnTriggerEnter2D(Collider2D coll) {

@@ -83,6 +83,7 @@ public class BoardManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update() {
 		if (!isRunning || gameOver) {
+			gemMan.animateWithoutUpdating();
 			return;
 		}
 		if (marbles.Count == 0) {
